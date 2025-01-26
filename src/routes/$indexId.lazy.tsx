@@ -1,6 +1,6 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createLazyFileRoute, Link, useNavigate } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/$indexId")({
+export const Route = createLazyFileRoute("/$indexId")({
   component: RouteComponent,
 });
 
@@ -9,7 +9,7 @@ function RouteComponent() {
   const { indexId } = Route.useParams();
   return (
     <div>
-      Hello "/$indexId" {indexId}!{" "}
+      <Link to={"/about"}>Hello "/$indexId" {indexId}!</Link>
       <button onClick={() => navigate({ to: "/" })}>go back</button>
     </div>
   );
