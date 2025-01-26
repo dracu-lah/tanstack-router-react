@@ -1,6 +1,10 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import * as z from "zod";
 
+const searchParamSchema = z.object({
+  name: z.string().optional(),
+});
 export const Route = createLazyFileRoute("/about")({
   component: RouteComponent,
 });
