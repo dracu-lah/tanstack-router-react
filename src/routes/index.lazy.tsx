@@ -1,9 +1,16 @@
-import { createLazyFileRoute } from '@tanstack/react-router'
+import { createLazyFileRoute, Link } from "@tanstack/react-router";
 
-export const Route = createLazyFileRoute('/')({
+export const Route = createLazyFileRoute("/")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
-  return <div>Hello "/"!</div>
+  return (
+    <div>
+      Hello "/"!
+      <Link to={"/$indexId"} params={{ indexId: "21" }}>
+        12
+      </Link>
+    </div>
+  );
 }
