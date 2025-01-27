@@ -1,3 +1,4 @@
+import NotFound from "@/components/common/NotFound";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated")({
@@ -6,5 +7,9 @@ export const Route = createFileRoute("/_authenticated")({
     if (!token) {
       throw redirect({ to: "/login" });
     }
+  },
+
+  notFoundComponent() {
+    return <NotFound />;
   },
 });
