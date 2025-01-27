@@ -47,6 +47,16 @@ export const Sidebar = () => (
             Dashboard
           </Link>
         </li>
+
+        <li style={sidebarStyles.navItem}>
+          <Link
+            to="/about"
+            style={sidebarStyles.link}
+            activeProps={{ style: sidebarStyles.activeLink }}
+          >
+            About
+          </Link>
+        </li>
       </ul>
     </nav>
   </div>
