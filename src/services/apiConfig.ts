@@ -27,7 +27,7 @@ const API_URLS: APIConfig = {
  * Gets the current environment from Vite's environment variables
  * Defaults to 'development' if not specified
  */
-export const getCurrentEnvironment = (): Environment => {
+const getCurrentEnvironment = (): Environment => {
   const env = import.meta.env.VITE_NODE_ENV || "development";
   return env as Environment;
 };
