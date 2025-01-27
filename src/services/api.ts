@@ -30,9 +30,12 @@ export const RefreshAPI = async (postData: any) => {
 
 export const GetDashboardAPI = async (params: any) => {
   try {
-    const { data } = await Axios.get(`${baseURL + endPoint.dashboard}`, {
+    const { data } = await Axios.get(`https://dummyjson.com/products`, {
       params: params,
     });
+    // const { data } = await Axios.get(`${baseURL + endPoint.dashboard}`, {
+    //   params: params,
+    // });
     return data;
   } catch (error) {
     throw error;
