@@ -31,7 +31,7 @@ export const Sidebar = () => (
       <ul style={sidebarStyles.nav}>
         <li style={sidebarStyles.navItem}>
           <Link
-            to="/auth/login"
+            to="/login"
             style={sidebarStyles.link}
             activeProps={{ style: sidebarStyles.activeLink }}
           >
