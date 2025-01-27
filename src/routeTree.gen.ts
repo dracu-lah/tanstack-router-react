@@ -11,6 +11,7 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as PublicImport } from './routes/_public'
 import { Route as AuthenticatedImport } from './routes/_authenticated'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as AuthRegisterImport } from './routes/_auth/register'
@@ -20,6 +21,11 @@ import { Route as PublicAboutIndexImport } from './routes/_public/about/index'
 import { Route as AuthenticatedDashboardIndexImport } from './routes/_authenticated/dashboard/index'
 
 // Create/Update Routes
+
+const PublicRoute = PublicImport.update({
+  id: '/_public',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const AuthenticatedRoute = AuthenticatedImport.update({
   id: '/_authenticated',
@@ -44,15 +50,15 @@ const AuthLoginRoute = AuthLoginImport.update({
 } as any)
 
 const PublicContactIndexRoute = PublicContactIndexImport.update({
-  id: '/_public/contact/',
+  id: '/contact/',
   path: '/contact/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => PublicRoute,
 } as any)
 
 const PublicAboutIndexRoute = PublicAboutIndexImport.update({
-  id: '/_public/about/',
+  id: '/about/',
   path: '/about/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => PublicRoute,
 } as any)
 
 const AuthenticatedDashboardIndexRoute =
@@ -78,6 +84,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof AuthenticatedImport
+      parentRoute: typeof rootRoute
+    }
+    '/_public': {
+      id: '/_public'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof PublicImport
       parentRoute: typeof rootRoute
     }
     '/_auth/login': {
@@ -106,14 +119,14 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof PublicAboutIndexImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof PublicImport
     }
     '/_public/contact/': {
       id: '/_public/contact/'
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof PublicContactIndexImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof PublicImport
     }
   }
 }
@@ -144,8 +157,21 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
+interface PublicRouteChildren {
+  PublicAboutIndexRoute: typeof PublicAboutIndexRoute
+  PublicContactIndexRoute: typeof PublicContactIndexRoute
+}
+
+const PublicRouteChildren: PublicRouteChildren = {
+  PublicAboutIndexRoute: PublicAboutIndexRoute,
+  PublicContactIndexRoute: PublicContactIndexRoute,
+}
+
+const PublicRouteWithChildren =
+  PublicRoute._addFileChildren(PublicRouteChildren)
+
 export interface FileRoutesByFullPath {
-  '': typeof AuthenticatedRouteWithChildren
+  '': typeof PublicRouteWithChildren
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
@@ -154,7 +180,7 @@ export interface FileRoutesByFullPath {
 }
 
 export interface FileRoutesByTo {
-  '': typeof AuthenticatedRouteWithChildren
+  '': typeof PublicRouteWithChildren
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
@@ -166,6 +192,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_auth': typeof AuthRouteWithChildren
   '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/_public': typeof PublicRouteWithChildren
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
@@ -182,6 +209,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_auth'
     | '/_authenticated'
+    | '/_public'
     | '/_auth/login'
     | '/_auth/register'
     | '/_authenticated/dashboard/'
@@ -193,15 +221,13 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
-  PublicAboutIndexRoute: typeof PublicAboutIndexRoute
-  PublicContactIndexRoute: typeof PublicContactIndexRoute
+  PublicRoute: typeof PublicRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
-  PublicAboutIndexRoute: PublicAboutIndexRoute,
-  PublicContactIndexRoute: PublicContactIndexRoute,
+  PublicRoute: PublicRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -216,8 +242,7 @@ export const routeTree = rootRoute
       "children": [
         "/_auth",
         "/_authenticated",
-        "/_public/about/",
-        "/_public/contact/"
+        "/_public"
       ]
     },
     "/_auth": {
@@ -233,6 +258,13 @@ export const routeTree = rootRoute
         "/_authenticated/dashboard/"
       ]
     },
+    "/_public": {
+      "filePath": "_public.tsx",
+      "children": [
+        "/_public/about/",
+        "/_public/contact/"
+      ]
+    },
     "/_auth/login": {
       "filePath": "_auth/login.tsx",
       "parent": "/_auth"
@@ -246,10 +278,12 @@ export const routeTree = rootRoute
       "parent": "/_authenticated"
     },
     "/_public/about/": {
-      "filePath": "_public/about/index.tsx"
+      "filePath": "_public/about/index.tsx",
+      "parent": "/_public"
     },
     "/_public/contact/": {
-      "filePath": "_public/contact/index.tsx"
+      "filePath": "_public/contact/index.tsx",
+      "parent": "/_public"
     }
   }
 }
