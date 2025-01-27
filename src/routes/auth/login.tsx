@@ -7,20 +7,22 @@ export const Route = createFileRoute("/auth/login")({
 
 function RouteComponent() {
   const { setToken } = useAuth();
+  const navigate = Route.useNavigate();
   return (
     <div>
       Hello "/auth/login"!
       <br />
       <button
-        onClick={() =>
+        onClick={() => {
           setToken({
             data: {
               roleName: "sdsafa",
               accessToken: "adfasd",
               refreshToken: "asdfasdf",
             },
-          })
-        }
+          });
+          navigate({ to: "/dashboard" });
+        }}
       >
         Login Cheyada
       </button>
