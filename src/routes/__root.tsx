@@ -1,15 +1,36 @@
-import * as React from 'react'
-import { Outlet, createRootRoute } from '@tanstack/react-router'
+import {
+  Link,
+  Outlet,
+  createRootRouteWithContext,
+} from "@tanstack/react-router";
+import { AuthContext } from "../hooks/useAuth";
+const activeProps = {
+  style: {
+    fontWeight: "bold",
+  },
+};
 
-export const Route = createRootRoute({
-  component: RootComponent,
-})
+type RouterContext = {
+  authentication: AuthContext;
+};
 
-function RootComponent() {
-  return (
-    <React.Fragment>
-      <div>Hello "__root"!</div>
+export const Route = createRootRouteWithContext<RouterContext>()({
+  component: () => (
+    <>
+      <h1>My App</h1>
+      <ul>
+        <li>
+          <Link to="/auth/login" activeProps={activeProps}>
+            Login
+          </Link>
+        </li>
+        <li>
+          <Link to="/dashboard" activeProps={activeProps}>
+            Dashboard
+          </Link>
+        </li>
+      </ul>
       <Outlet />
-    </React.Fragment>
-  )
-}
+    </>
+  ),
+});
