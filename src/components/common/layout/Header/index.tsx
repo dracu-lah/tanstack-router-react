@@ -3,7 +3,6 @@ const headerStyles = {
     padding: "1rem",
     backgroundColor: "#f8f9fa",
     borderBottom: "1px solid #dee2e6",
-    marginBottom: "1rem",
   },
   title: {
     margin: 0,

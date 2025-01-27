@@ -1,8 +1,8 @@
 import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 import { AuthContext } from "../hooks/useAuth";
-import { Footer } from "@/components/common/layout/footer";
-import { Header } from "@/components/common/layout/header";
-import { Sidebar } from "@/components/common/layout/sidebar";
+import { Footer } from "@/components/common/layout/Footer";
+import { Header } from "@/components/common/layout/Header";
+import { Sidebar } from "@/components/common/layout/Sidebar";
 
 type RouterContext = {
   authentication: AuthContext;
@@ -19,10 +19,8 @@ const layoutStyles = {
     flex: 1,
   },
   main: {
-    marginLeft: "200px", // Match sidebar width
-    padding: "1rem",
     flex: 1,
-    marginBottom: "60px", // Account for footer height
+    overflow: "auto", // Allow scrolling if content overflows
   },
 };
 

@@ -6,8 +6,6 @@ const sidebarStyles = {
     padding: "1rem",
     backgroundColor: "#f8f9fa",
     borderRight: "1px solid #dee2e6",
-    height: "calc(100vh - 140px)", // Accounting for header and footer
-    position: "fixed" as const,
     left: 0,
   },
   nav: {
@@ -28,7 +26,7 @@ const sidebarStyles = {
 };
 
 export const Sidebar = () => (
-  <aside style={sidebarStyles.sidebar}>
+  <div style={sidebarStyles.sidebar}>
     <nav>
       <ul style={sidebarStyles.nav}>
         <li style={sidebarStyles.navItem}>
@@ -51,5 +49,5 @@ export const Sidebar = () => (
         </li>
       </ul>
     </nav>
-  </aside>
+  </div>
 );
