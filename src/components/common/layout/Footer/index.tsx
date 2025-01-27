@@ -1,6 +1,6 @@
 const footerStyles = {
   footer: {
-    padding: "1rem",
+    padding: "1px",
     backgroundColor: "#f8f9fa",
     borderTop: "1px solid #dee2e6",
     textAlign: "center" as const,

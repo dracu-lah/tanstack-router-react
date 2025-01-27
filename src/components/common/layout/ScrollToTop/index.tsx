@@ -31,7 +31,7 @@ const ScrollToTop = () => {
     right: "20px",
     zIndex: 50,
     borderRadius: "50%",
-    backgroundColor: "#007bff", // basic blue color
+    backgroundColor: "black", // basic blue color
     padding: "10px",
     color: "white",
     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.2)",

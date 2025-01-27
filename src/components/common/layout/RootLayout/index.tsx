@@ -7,7 +7,7 @@ import ScrollToTop from "@/components/common/layout/ScrollToTop";
 const layoutStyles = {
   container: {
     display: "flex",
-    minHeight: "600vh",
+    minHeight: "100vh",
     flexDirection: "column" as const,
   },
   mainContainer: {
