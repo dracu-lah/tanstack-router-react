@@ -3,6 +3,7 @@ import { Footer } from "@/components/common/layout/Footer";
 import { Header } from "@/components/common/layout/Header";
 import { Sidebar } from "@/components/common/layout/Sidebar";
 import { AuthContextType } from "@/hooks/useAuth";
+import ScrollToTop from "@/components/common/layout/ScrollToTop";
 
 type RouterContext = {
   authentication: AuthContextType;
@@ -11,7 +12,7 @@ type RouterContext = {
 const layoutStyles = {
   container: {
     display: "flex",
-    minHeight: "100vh",
+    minHeight: "600vh",
     flexDirection: "column" as const,
   },
   mainContainer: {
@@ -35,6 +36,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         </main>
       </div>
       <Footer />
+      <ScrollToTop />
     </div>
   ),
 });
