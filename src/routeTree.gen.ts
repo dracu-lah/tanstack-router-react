@@ -14,11 +14,11 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as PublicImport } from './routes/_public'
 import { Route as AuthenticatedImport } from './routes/_authenticated'
 import { Route as AuthImport } from './routes/_auth'
-import { Route as AuthRegisterImport } from './routes/_auth/register'
-import { Route as AuthLoginImport } from './routes/_auth/login'
 import { Route as PublicContactIndexImport } from './routes/_public/contact/index'
 import { Route as PublicAboutIndexImport } from './routes/_public/about/index'
 import { Route as AuthenticatedDashboardIndexImport } from './routes/_authenticated/dashboard/index'
+import { Route as AuthRegisterIndexImport } from './routes/_auth/register/index'
+import { Route as AuthLoginIndexImport } from './routes/_auth/login/index'
 
 // Create/Update Routes
 
@@ -35,18 +35,6 @@ const AuthenticatedRoute = AuthenticatedImport.update({
 const AuthRoute = AuthImport.update({
   id: '/_auth',
   getParentRoute: () => rootRoute,
-} as any)
-
-const AuthRegisterRoute = AuthRegisterImport.update({
-  id: '/register',
-  path: '/register',
-  getParentRoute: () => AuthRoute,
-} as any)
-
-const AuthLoginRoute = AuthLoginImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => AuthRoute,
 } as any)
 
 const PublicContactIndexRoute = PublicContactIndexImport.update({
@@ -67,6 +55,18 @@ const AuthenticatedDashboardIndexRoute =
     path: '/dashboard/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+
+const AuthRegisterIndexRoute = AuthRegisterIndexImport.update({
+  id: '/register/',
+  path: '/register/',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthLoginIndexRoute = AuthLoginIndexImport.update({
+  id: '/login/',
+  path: '/login/',
+  getParentRoute: () => AuthRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -93,18 +93,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicImport
       parentRoute: typeof rootRoute
     }
-    '/_auth/login': {
-      id: '/_auth/login'
+    '/_auth/login/': {
+      id: '/_auth/login/'
       path: '/login'
       fullPath: '/login'
-      preLoaderRoute: typeof AuthLoginImport
+      preLoaderRoute: typeof AuthLoginIndexImport
       parentRoute: typeof AuthImport
     }
-    '/_auth/register': {
-      id: '/_auth/register'
+    '/_auth/register/': {
+      id: '/_auth/register/'
       path: '/register'
       fullPath: '/register'
-      preLoaderRoute: typeof AuthRegisterImport
+      preLoaderRoute: typeof AuthRegisterIndexImport
       parentRoute: typeof AuthImport
     }
     '/_authenticated/dashboard/': {
@@ -134,13 +134,13 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface AuthRouteChildren {
-  AuthLoginRoute: typeof AuthLoginRoute
-  AuthRegisterRoute: typeof AuthRegisterRoute
+  AuthLoginIndexRoute: typeof AuthLoginIndexRoute
+  AuthRegisterIndexRoute: typeof AuthRegisterIndexRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
-  AuthLoginRoute: AuthLoginRoute,
-  AuthRegisterRoute: AuthRegisterRoute,
+  AuthLoginIndexRoute: AuthLoginIndexRoute,
+  AuthRegisterIndexRoute: AuthRegisterIndexRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
@@ -172,8 +172,8 @@ const PublicRouteWithChildren =
 
 export interface FileRoutesByFullPath {
   '': typeof PublicRouteWithChildren
-  '/login': typeof AuthLoginRoute
-  '/register': typeof AuthRegisterRoute
+  '/login': typeof AuthLoginIndexRoute
+  '/register': typeof AuthRegisterIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/about': typeof PublicAboutIndexRoute
   '/contact': typeof PublicContactIndexRoute
@@ -181,8 +181,8 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '': typeof PublicRouteWithChildren
-  '/login': typeof AuthLoginRoute
-  '/register': typeof AuthRegisterRoute
+  '/login': typeof AuthLoginIndexRoute
+  '/register': typeof AuthRegisterIndexRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/about': typeof PublicAboutIndexRoute
   '/contact': typeof PublicContactIndexRoute
@@ -193,8 +193,8 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/_public': typeof PublicRouteWithChildren
-  '/_auth/login': typeof AuthLoginRoute
-  '/_auth/register': typeof AuthRegisterRoute
+  '/_auth/login/': typeof AuthLoginIndexRoute
+  '/_auth/register/': typeof AuthRegisterIndexRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_public/about/': typeof PublicAboutIndexRoute
   '/_public/contact/': typeof PublicContactIndexRoute
@@ -210,8 +210,8 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/_authenticated'
     | '/_public'
-    | '/_auth/login'
-    | '/_auth/register'
+    | '/_auth/login/'
+    | '/_auth/register/'
     | '/_authenticated/dashboard/'
     | '/_public/about/'
     | '/_public/contact/'
@@ -248,8 +248,8 @@ export const routeTree = rootRoute
     "/_auth": {
       "filePath": "_auth.tsx",
       "children": [
-        "/_auth/login",
-        "/_auth/register"
+        "/_auth/login/",
+        "/_auth/register/"
       ]
     },
     "/_authenticated": {
@@ -265,12 +265,12 @@ export const routeTree = rootRoute
         "/_public/contact/"
       ]
     },
-    "/_auth/login": {
-      "filePath": "_auth/login.tsx",
+    "/_auth/login/": {
+      "filePath": "_auth/login/index.tsx",
       "parent": "/_auth"
     },
-    "/_auth/register": {
-      "filePath": "_auth/register.tsx",
+    "/_auth/register/": {
+      "filePath": "_auth/register/index.tsx",
       "parent": "/_auth"
     },
     "/_authenticated/dashboard/": {
