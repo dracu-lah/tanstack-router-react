@@ -1,5 +1,7 @@
+import React from "react";
+
 const NotFound = () => {
-  const pageStyle = {
+  const pageStyle: React.CSSProperties = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -10,12 +12,12 @@ const NotFound = () => {
     textAlign: "center",
   };
 
-  const messageStyle = {
+  const messageStyle: React.CSSProperties = {
     fontSize: "3rem",
     fontWeight: "bold",
   };
 
-  const subMessageStyle = {
+  const subMessageStyle: React.CSSProperties = {
     fontSize: "1.5rem",
   };
 
