@@ -1,11 +1,11 @@
 import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
-import { AuthContext } from "../hooks/useAuth";
 import { Footer } from "@/components/common/layout/Footer";
 import { Header } from "@/components/common/layout/Header";
 import { Sidebar } from "@/components/common/layout/Sidebar";
+import { AuthContextType } from "@/hooks/useAuth";
 
 type RouterContext = {
-  authentication: AuthContext;
+  authentication: AuthContextType;
 };
 
 const layoutStyles = {

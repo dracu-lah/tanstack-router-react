@@ -6,12 +6,24 @@ export const Route = createFileRoute("/auth/login")({
 });
 
 function RouteComponent() {
-  const { signIn } = useAuth();
+  const { setToken } = useAuth();
   return (
     <div>
       Hello "/auth/login"!
       <br />
-      <button onClick={() => signIn()}>Login Cheyada</button>
+      <button
+        onClick={() =>
+          setToken({
+            data: {
+              roleName: "sdsafa",
+              accessToken: "adfasd",
+              refreshToken: "asdfasdf",
+            },
+          })
+        }
+      >
+        Login Cheyada
+      </button>
     </div>
   );
 }

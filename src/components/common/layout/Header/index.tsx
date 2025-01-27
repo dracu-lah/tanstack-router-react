@@ -1,4 +1,5 @@
 import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "@tanstack/react-router";
 
 const headerStyles = {
   header: {
@@ -15,15 +16,23 @@ const headerStyles = {
   },
 };
 export const Header = () => {
-  const { isLogged, signOut } = useAuth();
+  const router = useRouter();
+  const { token, clearToken } = useAuth();
   return (
     <header style={headerStyles.header}>
       {" "}
       <h1 style={headerStyles.title}>My App</h1>
-      {isLogged() && (
+      {token && (
         <div>
           <p>Logged In Vro</p>
-          <button onClick={() => signOut()}>Log out</button>
+          <button
+            onClick={() => {
+              clearToken();
+              router.invalidate();
+            }}
+          >
+            Log out
+          </button>
         </div>
       )}
     </header>
