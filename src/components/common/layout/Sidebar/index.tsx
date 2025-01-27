@@ -1,3 +1,4 @@
+import { useAuth } from "@/hooks/useAuth";
 import { Link } from "@tanstack/react-router";
 
 const sidebarStyles = {
@@ -25,39 +26,44 @@ const sidebarStyles = {
   },
 };
 
-export const Sidebar = () => (
-  <div style={sidebarStyles.sidebar}>
-    <nav>
-      <ul style={sidebarStyles.nav}>
-        <li style={sidebarStyles.navItem}>
-          <Link
-            to="/login"
-            style={sidebarStyles.link}
-            activeProps={{ style: sidebarStyles.activeLink }}
-          >
-            Login
-          </Link>
-        </li>
-        <li style={sidebarStyles.navItem}>
-          <Link
-            to="/dashboard"
-            style={sidebarStyles.link}
-            activeProps={{ style: sidebarStyles.activeLink }}
-          >
-            Dashboard
-          </Link>
-        </li>
+export const Sidebar = () => {
+  const { token } = useAuth();
+  return (
+    <div style={sidebarStyles.sidebar}>
+      <nav>
+        <ul style={sidebarStyles.nav}>
+          {!token && (
+            <li style={sidebarStyles.navItem}>
+              <Link
+                to="/login"
+                style={sidebarStyles.link}
+                activeProps={{ style: sidebarStyles.activeLink }}
+              >
+                Login
+              </Link>
+            </li>
+          )}
+          <li style={sidebarStyles.navItem}>
+            <Link
+              to="/dashboard"
+              style={sidebarStyles.link}
+              activeProps={{ style: sidebarStyles.activeLink }}
+            >
+              Dashboard
+            </Link>
+          </li>
 
-        <li style={sidebarStyles.navItem}>
-          <Link
-            to="/about"
-            style={sidebarStyles.link}
-            activeProps={{ style: sidebarStyles.activeLink }}
-          >
-            About
-          </Link>
-        </li>
-      </ul>
-    </nav>
-  </div>
-);
+          <li style={sidebarStyles.navItem}>
+            <Link
+              to="/about"
+              style={sidebarStyles.link}
+              activeProps={{ style: sidebarStyles.activeLink }}
+            >
+              About
+            </Link>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  );
+};
