@@ -8,7 +8,7 @@ export const Route = createFileRoute("/_authenticated/dashboard/")({
 function RouteComponent() {
   const { data, isLoading } = useQuery({
     queryKey: ["todos"],
-    queryFn: GetDashboardAPI,
+    queryFn: () => GetDashboardAPI(),
   });
   if (isLoading) {
     return "...loading";
