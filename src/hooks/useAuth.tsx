@@ -4,6 +4,7 @@ import {
   useContext,
   useMemo,
   useReducer,
+  useEffect,
   ReactNode,
 } from "react";
 
@@ -43,35 +44,40 @@ const ACTIONS = {
   clearToken: "clearToken",
 } as const;
 
+// Helper function to set axios authorization header
+const setAxiosAuthHeader = (token: string | null) => {
+  if (token) {
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  } else {
+    delete axios.defaults.headers.common["Authorization"];
+  }
+};
+
 // Reducer function to handle authentication state changes
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
     case ACTIONS.setToken:
       if (action.payload) {
         const { accessToken, refreshToken, data } = action.payload.data;
-
-        // Set the authentication tokens and data in axios headers and local storage
-        axios.defaults.headers.common["Authorization"] =
-          "Bearer " + accessToken;
+        // Set the authentication tokens and data in local storage
         localStorage.setItem("token", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
         localStorage.setItem("userData", JSON.stringify(data));
-
+        // Set axios authorization header
+        setAxiosAuthHeader(accessToken);
         // Update the state with the new tokens and data
         return { ...state, token: accessToken, refreshToken, data };
       }
       return state;
-
     case ACTIONS.clearToken:
-      // Clear the authentication tokens and data from axios headers and local storage
-      delete axios.defaults.headers.common["Authorization"];
+      // Clear the authentication tokens and data from local storage
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("userData");
-
+      // Clear axios authorization header
+      setAxiosAuthHeader(null);
       // Update the state by removing the tokens and data
       return { ...state, token: null, refreshToken: null, data: null };
-
     default:
       console.error(
         `You passed an action.type: ${action.type} which doesn't exist`,
@@ -97,6 +103,11 @@ interface AuthProviderProps {
 const AuthProvider = ({ children }: AuthProviderProps) => {
   // Use reducer to manage the authentication state
   const [state, dispatch] = useReducer(authReducer, initialData);
+
+  // Effect to set axios authorization header on mount and when token changes
+  useEffect(() => {
+    setAxiosAuthHeader(state.token);
+  }, [state.token]);
 
   // Function to set the authentication token
   const setToken = (newToken: SetTokenPayload) => {
