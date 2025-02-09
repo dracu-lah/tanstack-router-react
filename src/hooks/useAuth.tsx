@@ -11,7 +11,7 @@ import {
 interface AuthState {
   token: string | null;
   refreshToken: string | null;
-  roleName: string | null;
+  data: Record<string, any> | null;
 }
 
 // Define types for the action payload
@@ -19,7 +19,7 @@ interface SetTokenPayload {
   data: {
     accessToken: string;
     refreshToken: string;
-    roleName: string;
+    data: Record<string, any>;
   };
 }
 
@@ -48,28 +48,29 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
     case ACTIONS.setToken:
       if (action.payload) {
-        const { accessToken, refreshToken, roleName } = action.payload.data;
-        // Set the authentication tokens and role name in axios headers and local storage
+        const { accessToken, refreshToken, data } = action.payload.data;
+
+        // Set the authentication tokens and data in axios headers and local storage
         axios.defaults.headers.common["Authorization"] =
           "Bearer " + accessToken;
         localStorage.setItem("token", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
-        localStorage.setItem("roleName", roleName);
+        localStorage.setItem("userData", JSON.stringify(data));
 
-        // Update the state with the new tokens and role name
-        return { ...state, token: accessToken, refreshToken, roleName };
+        // Update the state with the new tokens and data
+        return { ...state, token: accessToken, refreshToken, data };
       }
       return state;
 
     case ACTIONS.clearToken:
-      // Clear the authentication tokens and role name from axios headers and local storage
+      // Clear the authentication tokens and data from axios headers and local storage
       delete axios.defaults.headers.common["Authorization"];
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
-      localStorage.removeItem("roleName");
+      localStorage.removeItem("userData");
 
-      // Update the state by removing the tokens and role name
-      return { ...state, token: null, refreshToken: null, roleName: null };
+      // Update the state by removing the tokens and data
+      return { ...state, token: null, refreshToken: null, data: null };
 
     default:
       console.error(
@@ -83,7 +84,9 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
 const initialData: AuthState = {
   token: localStorage.getItem("token"),
   refreshToken: localStorage.getItem("refreshToken"),
-  roleName: localStorage.getItem("roleName"),
+  data: localStorage.getItem("userData")
+    ? JSON.parse(localStorage.getItem("userData")!)
+    : null,
 };
 
 // AuthProvider component to provide the authentication context to children
@@ -97,13 +100,11 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // Function to set the authentication token
   const setToken = (newToken: SetTokenPayload) => {
-    // Dispatch the setToken action to update the state
     dispatch({ type: ACTIONS.setToken, payload: newToken });
   };
 
   // Function to clear the authentication token
   const clearToken = () => {
-    // Dispatch the clearToken action to update the state
     dispatch({ type: ACTIONS.clearToken });
   };
 
@@ -117,7 +118,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     [state],
   );
 
-  // Provide the authentication context to the children components
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
@@ -134,5 +134,6 @@ export const useAuth = (): AuthState & {
   }
   return context;
 };
+
 export type AuthContextType = ReturnType<typeof useAuth>;
 export default AuthProvider;

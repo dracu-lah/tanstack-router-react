@@ -14,12 +14,17 @@ function RouteComponent() {
       <br />
       <button
         onClick={() => {
-          setToken({
+          const loginData = {
+            accessToken: "your-access-token",
+            refreshToken: "your-refresh-token",
             data: {
-              roleName: "sdsafa",
-              accessToken: "adfasd",
-              refreshToken: "asdfasdf",
+              roleName: "admin",
+              userId: "123",
+              permissions: ["read", "write"],
             },
+          };
+          setToken({
+            data: loginData,
           });
           navigate({ to: "/dashboard" });
         }}
