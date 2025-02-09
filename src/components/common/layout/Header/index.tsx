@@ -25,7 +25,7 @@ export const Header = () => {
       <h1 style={headerStyles.title}>My App</h1>
       {token && (
         <>
-          {isTesting === "true" && <h1>This Is a Test Instance</h1>}
+          {isTesting && <h1>This Is a Test Instance</h1>}
           <div>
             <p>Logged In Vro</p>
             <button
