@@ -6,109 +6,77 @@ import axios, {
 import { RefreshAPI } from "./api";
 
 /**
- * Interface for the refresh token API response
+ * Interface for refresh token API response
  */
 interface RefreshTokenResponse {
   accessToken: string;
 }
 
 /**
- * Interface for the refresh token request payload
+ * Queue to hold pending requests while refreshing the token
  */
-interface RefreshTokenRequest {
-  refreshToken: string;
-  accessToken: string;
-}
-
-/**
- * Flag to track if a token refresh attempt is in progress
- */
-let isRefreshing = false;
+let refreshTokenPromise: Promise<string | null> | null = null;
 
 /**
  * Refreshes the access token using the refresh token stored in localStorage
- * @returns Promise<string | null> - Returns the new access token or null if refresh fails
  */
 const refreshToken = async (): Promise<string | null> => {
-  try {
-    const refreshToken = localStorage.getItem("refreshToken");
-    const accessToken = localStorage.getItem("token");
+  if (!refreshTokenPromise) {
+    refreshTokenPromise = (async () => {
+      try {
+        const refreshToken = localStorage.getItem("refreshToken");
+        const accessToken = localStorage.getItem("token");
 
-    if (!refreshToken || !accessToken) {
-      throw new Error("No refresh or access token found");
-    }
+        if (!refreshToken || !accessToken) throw new Error("No tokens found");
 
-    const payload: RefreshTokenRequest = { refreshToken, accessToken };
-    const response = await RefreshAPI(payload);
-    const newAccessToken = response.data.accessToken;
+        const { data } = await RefreshAPI({ refreshToken, accessToken });
+        localStorage.setItem("token", data.accessToken);
+        axios.defaults.headers.common["Authorization"] =
+          `Bearer ${data.accessToken}`;
 
-    // Store the new access token in localStorage
-    localStorage.setItem("token", newAccessToken);
-
-    // Update the default authorization header for axios
-    axios.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
-
-    return newAccessToken;
-  } catch (error) {
-    const axiosError = error as AxiosError;
-    console.error(
-      "Error refreshing token:",
-      axiosError.response?.data || axiosError.message,
-    );
-
-    // Clear localStorage and refresh the window on token refresh failure
-    setTimeout(() => {
-      localStorage.clear();
-      window.location.reload();
-    }, 2 * 1000);
-
-    return null;
+        return data.accessToken;
+      } catch (error) {
+        console.error("Token refresh failed:", error);
+        localStorage.clear();
+        window.location.reload();
+        return null;
+      } finally {
+        refreshTokenPromise = null; // Reset promise after refresh attempt
+      }
+    })();
   }
+
+  return refreshTokenPromise;
 };
 
 /**
- * Extended type for Axios request config to include retry flag
+ * Extended Axios request config to include retry flag
  */
 interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
 
 /**
- * Axios response interceptor configuration
- * Handles:
- * - 401 errors by attempting to refresh the token and retrying the request
- * - 403 errors by clearing the session and reloading the page
+ * Axios response interceptor for handling token expiration
  */
 axios.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
     const originalRequest = error.config as ExtendedAxiosRequestConfig;
 
-    // Handle 401 Unauthorized errors
-    if (
-      error.response?.status === 401 &&
-      !originalRequest._retry &&
-      !isRefreshing
-    ) {
+    if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      isRefreshing = true;
-
       const newAccessToken = await refreshToken();
-      isRefreshing = false;
 
       if (newAccessToken && originalRequest.headers) {
-        // Update the authorization header and retry the original request
         originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
         return axios(originalRequest);
       }
     }
 
-    // Handle 403 Forbidden errors
     if (error.response?.status === 403) {
-      setTimeout(() => {
-        localStorage.clear();
-        window.location.reload();
-      }, 2 * 1000);
+      localStorage.clear();
+      window.location.reload();
     }
 
     return Promise.reject(error);
