@@ -1,7 +1,7 @@
-import { baseURL } from "./apiConfig";
 import axios from "./axiosConfig";
 import Axios from "axios";
 import endPoint from "./endPoint";
+import { baseURL } from "@/constants/config";
 /************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /* AUTH START */
 export const LoginAPI = async (postData: any) => {
